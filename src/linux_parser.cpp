@@ -10,38 +10,41 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-// DONE: An example of how to read data from the filesystem
-string LinuxParser::OperatingSystem() {
+string LinuxParser::getLineForKey(string path, string inputKey) {
   string line;
-  string key;
-  string value;
-  std::ifstream filestream(kOSPath);
-  if (filestream.is_open()) {
-    while (std::getline(filestream, line)) {
+  string key, value;
+  std::ifstream inputFile(path);
+  if (inputFile.is_open()) {
+    while (std::getline(inputFile, line)) {
       std::replace(line.begin(), line.end(), ' ', '_');
       std::replace(line.begin(), line.end(), '=', ' ');
       std::replace(line.begin(), line.end(), '"', ' ');
       std::istringstream linestream(line);
       while (linestream >> key >> value) {
-        if (key == "PRETTY_NAME") {
+        if (key == inputKey) {
           std::replace(value.begin(), value.end(), '_', ' ');
           return value;
         }
       }
     }
   }
-  return value;
+
+}
+
+// DONE: An example of how to read data from the filesystem
+string LinuxParser::OperatingSystem() {
+  return getLineForKey(kOSPath, "PRETTY_NAME");
 }
 
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::Kernel() {
-  string os, kernel;
+  string os, version, kernel;
   string line;
   std::ifstream stream(kProcDirectory + kVersionFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    linestream >> os >> kernel;
+    linestream >> os >> version >> kernel;
   }
   return kernel;
 }
@@ -78,7 +81,6 @@ long LinuxParser::UpTime() {
     std::istringstream linestream(line);
     linestream >> timeItIsRunning;
   }
-  string::size_type sz;
   return std::stol (timeItIsRunning, &sz);
  }
 
@@ -99,10 +101,16 @@ long LinuxParser::IdleJiffies() { return 0; }
 vector<string> LinuxParser::CpuUtilization() { return {}; }
 
 // TODO: Read and return the total number of processes
-int LinuxParser::TotalProcesses() { return 0; }
+int LinuxParser::TotalProcesses() { 
+  string numberOfProcesses_ = getLineForKey(kProcDirectory + kStatFilename, "processes");
+  return stoi(numberOfProcesses_, &sz);
+ }
 
 // TODO: Read and return the number of running processes
-int LinuxParser::RunningProcesses() { return 0; }
+int LinuxParser::RunningProcesses() {  
+  string procs_running_ = getLineForKey(kProcDirectory + kStatFilename, "procs_running ");
+  return stoi(procs_running_, &sz);
+}
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function

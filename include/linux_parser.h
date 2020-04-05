@@ -17,7 +17,10 @@ const std::string kMeminfoFilename{"/meminfo"};
 const std::string kVersionFilename{"/version"};
 const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
+// General
 
+std::string::size_type sz;
+std::string getLineForKey(std::string, std::string);
 // System
 float MemoryUtilization();
 long UpTime();
