@@ -9,6 +9,7 @@ using std::stof;
 using std::string;
 using std::to_string;
 using std::vector;
+string::size_type sz;
 
 string LinuxParser::getLineForKey(string path, string inputKey) {
   string line;
@@ -108,7 +109,7 @@ int LinuxParser::TotalProcesses() {
 
 // TODO: Read and return the number of running processes
 int LinuxParser::RunningProcesses() {  
-  string procs_running_ = getLineForKey(kProcDirectory + kStatFilename, "procs_running ");
+  string procs_running_ = getLineForKey(kProcDirectory + kStatFilename, "procs_running");
   return stoi(procs_running_, &sz);
 }
 
