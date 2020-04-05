@@ -11,6 +11,18 @@ using std::to_string;
 using std::vector;
 string::size_type sz;
 
+int convertToInt(const string &inputString) {
+  int returnValue{0};
+  try { returnValue = std::stoi (inputString, &sz);} catch (...) {}
+  return returnValue;
+}
+
+long convertToLong(const string &inputString) {
+  int returnValue{0};
+  try { returnValue = std::stol (inputString, &sz);} catch (...) {}
+  return returnValue;
+}
+
 string LinuxParser::getLineForKey(string path, string inputKey) {
   string line;
   string key, value;
@@ -82,7 +94,7 @@ long LinuxParser::UpTime() {
     std::istringstream linestream(line);
     linestream >> timeItIsRunning;
   }
-  return std::stol (timeItIsRunning, &sz);
+  return convertToLong(timeItIsRunning);
  }
 
 // TODO: Read and return the number of jiffies for the system
@@ -104,13 +116,13 @@ vector<string> LinuxParser::CpuUtilization() { return {}; }
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() { 
   string numberOfProcesses_ = getLineForKey(kProcDirectory + kStatFilename, "processes");
-  return stoi(numberOfProcesses_, &sz);
+  return convertToInt(numberOfProcesses_);
  }
 
 // TODO: Read and return the number of running processes
 int LinuxParser::RunningProcesses() {  
   string procs_running_ = getLineForKey(kProcDirectory + kStatFilename, "procs_running");
-  return stoi(procs_running_, &sz);
+  return convertToInt(procs_running_);
 }
 
 // TODO: Read and return the command associated with a process
