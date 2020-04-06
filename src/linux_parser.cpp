@@ -10,7 +10,8 @@ using std::string;
 using std::to_string;
 using std::vector;
 string::size_type sz;
-
+long systemAvailableMemory = 0;
+bool availbaleMemeoryNotRead = true;
 int convertToInt(const string &inputString) {
   int returnValue{0};
   try { returnValue = std::stoi (inputString, &sz);} catch (...) {}
@@ -29,6 +30,23 @@ string LinuxParser::getLineForKey(string path, string inputKey) {
   std::ifstream inputFile(path);
   if (inputFile.is_open()) {
     while (std::getline(inputFile, line)) {
+      std::istringstream linestream(line);
+      while (linestream >> key >> value) {
+        if (key == inputKey) {
+          return value;
+        }
+      }
+    }
+  }
+  return value;
+}
+
+string LinuxParser::getLineForKey(string path, string inputKey, int i) {
+  string line;
+  string key, value;
+  std::ifstream inputFile(path);
+  if (inputFile.is_open() && i==1) {
+    while (std::getline(inputFile, line)) {
       std::replace(line.begin(), line.end(), ' ', '_');
       std::replace(line.begin(), line.end(), '=', ' ');
       std::replace(line.begin(), line.end(), '"', ' ');
@@ -41,12 +59,12 @@ string LinuxParser::getLineForKey(string path, string inputKey) {
       }
     }
   }
-
+  return value;
 }
 
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
-  return getLineForKey(kOSPath, "PRETTY_NAME");
+  return getLineForKey(kOSPath, "PRETTY_NAME", 1);
 }
 
 // DONE: An example of how to read data from the filesystem
@@ -83,7 +101,18 @@ vector<int> LinuxParser::Pids() {
 }
 
 // TODO: Read and return the system memory utilization
-float LinuxParser::MemoryUtilization() { return 0.0; }
+float LinuxParser::MemoryUtilization() { 
+  if (availbaleMemeoryNotRead) {
+    availbaleMemeoryNotRead = false;
+    string totalMemory_s = getLineForKey(kProcDirectory + kMeminfoFilename, "MemTotal:");
+    systemAvailableMemory = convertToLong(totalMemory_s);
+  }
+  string activeMemory_s = getLineForKey(kProcDirectory + kStatFilename, "Active:");
+  long availableMemory = convertToLong(activeMemory_s);
+  
+  if (systemAvailableMemory==0) return 100.00; 
+  return (100.00 - (availableMemory/systemAvailableMemory));
+ }
 
 // TODO: Read and return the system uptime
 long LinuxParser::UpTime() { 
