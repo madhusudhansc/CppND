@@ -19,6 +19,9 @@ const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
 // General
 std::string getLineForKey(std::string, std::string);
+std::string getLineForKey(std::string, std::string, int);
+int convertToInt(const std::string&);
+long convertToLong(const std::string&);
 // System
 float MemoryUtilization();
 long UpTime();

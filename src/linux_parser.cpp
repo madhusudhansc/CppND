@@ -12,13 +12,13 @@ using std::vector;
 string::size_type sz;
 long systemAvailableMemory = 0;
 bool availbaleMemeoryNotRead = true;
-int convertToInt(const string &inputString) {
+int LinuxParser::convertToInt(const string &inputString) {
   int returnValue{0};
   try { returnValue = std::stoi (inputString, &sz);} catch (...) {}
   return returnValue;
 }
 
-long convertToLong(const string &inputString) {
+long LinuxParser::convertToLong(const string &inputString) {
   int returnValue{0};
   try { returnValue = std::stol (inputString, &sz);} catch (...) {}
   return returnValue;
@@ -111,7 +111,7 @@ float LinuxParser::MemoryUtilization() {
   long availableMemory = convertToLong(activeMemory_s);
   
   if (systemAvailableMemory==0) return 100.00; 
-  return (100.00 - (availableMemory/systemAvailableMemory));
+  return ((float) availableMemory/(float)systemAvailableMemory);
  }
 
 // TODO: Read and return the system uptime
