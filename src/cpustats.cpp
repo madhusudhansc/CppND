@@ -11,6 +11,20 @@ using std::size_t;
 using std::string;
 using std::vector;
 
+
+Cpustats::Cpustats() {
+      kUser = 0;
+      kNice=0;
+      kSystem=0;
+      kIdle=0;
+      kIOwait=0;
+      kIRQ=0;
+      kSoftIRQ=0;
+      kSteal=0;
+      kGuest=0;
+      kGuestNice=0;
+}
+
 Cpustats::Cpustats(string cpustatsLine) {
    vector<long> cpustats {};
    string somestats;

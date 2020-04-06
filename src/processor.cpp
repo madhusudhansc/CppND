@@ -18,7 +18,7 @@ float Processor::Utilization() {
   long PrevNonIdle = previousCpuStats.kUser + previousCpuStats.kNice + previousCpuStats.kSystem
    + previousCpuStats.kIRQ + previousCpuStats.kSoftIRQ + previousCpuStats.kSteal;
   long NonIdle = presentCpuStats.kUser + presentCpuStats.kNice + presentCpuStats.kSystem
-   + presentCpuStats.kIRQ + presentCpuStats.kSoftIRQ + previousCpuStats.kSteal;
+   + presentCpuStats.kIRQ + presentCpuStats.kSoftIRQ + presentCpuStats.kSteal;
   
   previousCpuStats.copyFromOther(presentCpuStats);
   long PrevTotal = PrevIdle + PrevNonIdle;

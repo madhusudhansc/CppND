@@ -7,6 +7,7 @@
 class Cpustats {
  private:
   public:
+  Cpustats();
   Cpustats(std::string);
   void copyFromOther(const Cpustats &otherObject);
   long kUser = 0,
