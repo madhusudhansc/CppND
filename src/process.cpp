@@ -41,8 +41,8 @@ float Process::CpuUtilization() {
 
   long total_time = utime + stime + cutime + cstime;
   float seconds = (float) systemUptime - ((float) starttime/(float) hertz);
-  float tbyh = (float) total_time / (float) heatz ;
-  if seconds==0: return 0.0;
+  float tbyh = (float) total_time / (float) hertz ;
+  if seconds==0 return 0.0;
   
   return 100.00 * tbyh/seconds; 
 }
