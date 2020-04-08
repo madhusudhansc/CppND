@@ -5,7 +5,6 @@
 
 // TODO: Return the aggregate CPU utilization
 float Processor::Utilization() {
-  std::ifstream os, version, kernel;
   std::string line;
   std::ifstream stream(LinuxParser::kProcDirectory + LinuxParser::kStatFilename);
   if (stream.is_open()) {
