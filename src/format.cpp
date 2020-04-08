@@ -2,18 +2,16 @@
 
 #include "format.h"
 
-using std::string;
-
 // TODO: Complete this helper function
 // INPUT: Long int measuring seconds
 // OUTPUT: HH:MM:SS
 // REMOVE: [[maybe_unused]] once you define the function
 std::string appendZeroes (long input, int length){
-  std:string input_s = std::to_string(input);
+  std::string input_s = std::to_string(input);
   return std::string(length - input_s.length(), '0') + input_s;
   };
 std::string appendZeroes (int input, int length){
-  std:string input_s = std::to_string(input);
+  std::string input_s = std::to_string(input);
   return std::string(length - input_s.length(), '0') + input_s;
   };
 std::string Format::ElapsedTime(long seconds) { 
