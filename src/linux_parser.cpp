@@ -2,7 +2,9 @@
 #include <unistd.h>
 #include <string>
 #include <vector>
+#include <sstream>
 #include <iostream>
+#include <iomanip>
 
 #include "linux_parser.h"
 
@@ -185,10 +187,12 @@ string LinuxParser::Command(int pid) {
 // TODO: Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Ram(int pid) { 
-  string ramNumber = getLineForKey(kProcDirectory + "/" + std::to_string(pid) + "/" + kCmdlineFilename, "VmSize:");
+  string ramNumber = getLineForKey(kProcDirectory + "/" + std::to_string(pid) + "/" + kStatusFilename, "VmSize:");
   long ramnumber_n = convertToLong(ramNumber);
   float inMb = (float) ramnumber_n  / 1024.00;
-  return std::to_string(inMb); 
+  std::stringstream temp_s;
+  temp_s << std::fixed << std::setprecision(2) << inMb;
+  return temp_s.str(); 
 }
 
 // TODO: Read and return the user ID associated with a process
@@ -199,7 +203,7 @@ string LinuxParser::Uid(int pid[[maybe_unused]]) { return string(); }
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::User(int pid) { 
   string userName = "unknown";
-  string userId = getLineForKey(kProcDirectory + "/" + std::to_string(pid) + "/" + kCmdlineFilename, "Uid:");
+  string userId = getLineForKey(kProcDirectory + "/" + std::to_string(pid) + "/" + kStatusFilename, "Uid:");
   if (userId == "") return userName;
   std::ifstream inputFile(kPasswordPath);
   string line;

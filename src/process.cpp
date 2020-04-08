@@ -39,7 +39,7 @@ float Process::CpuUtilization() {
   long cutime = LinuxParser::convertToLong(statsParts[15]);
   long cstime = LinuxParser::convertToLong(statsParts[16]);
   long starttime = LinuxParser::convertToLong(statsParts[21]);
-  uptime_ = starttime;
+  uptime_ = utime;
 
   long total_time = utime + stime + cutime + cstime;
   float seconds = (float) systemUptime - ((float) starttime/(float) hertz);
@@ -62,7 +62,7 @@ string Process::User() {
 
 // TODO: Return the age of this process (in seconds)
 long int Process::UpTime() { 
-  if (uptime_ == 0) {float dummy_  CpuUtilization();} // This is to get uptime just incase Uptime() runs before CpuUtilization();
+  if (uptime_ == 0) {CpuUtilization();} // This is to get uptime just incase Uptime() runs before CpuUtilization();
   long hertz = sysconf(_SC_CLK_TCK);
   if (hertz==0) return 0;
   return uptime_/hertz;
@@ -70,4 +70,4 @@ long int Process::UpTime() {
 
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a[[maybe_unused]]) const { return true; }
+bool Process::operator>(Process const& a) const { return CpuUtilization() > a.CpuUtilization(); }
