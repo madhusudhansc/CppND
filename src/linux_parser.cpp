@@ -173,11 +173,23 @@ int LinuxParser::RunningProcesses() {
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Command(int pid) { 
+  std::string line;
+  std::ifstream stream(LinuxParser::kProcDirectory + "/" + std::to_string(pid) + "/" + LinuxParser::kCmdlineFilename);
+  if (stream.is_open()) {
+    std::getline(stream, line);
+  }
+  return line; 
+}
 
 // TODO: Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Ram(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Ram(int pid) { 
+  string ramNumber = getLineForKey(kProcDirectory + "/" + std::to_string(pid) + "/" + kCmdlineFilename, "VmSize:");
+  long ramnumber_n = convertToLong(ramNumber);
+  float inMb = (float) ramnumber_n  / 1024.00;
+  return std::to_string(inMb); 
+}
 
 // TODO: Read and return the user ID associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
@@ -185,7 +197,29 @@ string LinuxParser::Uid(int pid[[maybe_unused]]) { return string(); }
 
 // TODO: Read and return the user associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::User(int pid) { 
+  string userName = "unknown";
+  string userId = getLineForKey(kProcDirectory + "/" + std::to_string(pid) + "/" + kCmdlineFilename, "Uid:");
+  if (userId == "") return userName;
+  std::ifstream inputFile(kPasswordPath);
+  string line;
+  if (inputFile.is_open()) {
+    while (std::getline(inputFile, line)) {
+      std::stringstream linestream(line);
+      int i=0;
+      string checkString;
+      while (linestream.good() & (i<3)) {
+        std::getline(linestream, checkString, ':');
+        i++;
+      }
+      if(userId == checkString) {   // THis is the line having parser, so stream this again to get name.
+        std::stringstream linestream2(line);
+        std::getline(linestream2, userName, ':');
+      }
+    }
+  }
+  return userName; 
+}
 
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
