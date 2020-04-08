@@ -29,10 +29,10 @@ float Process::CpuUtilization() {
   std::istream_iterator<std::string> end;
   std::vector<std::string> statsParts(begin, end);
   //Now line has full content 
-  if (statsParts.size() != 52) {return 0.00} //We should get 52 stats from /proc/[pid]/stat file
+  if (statsParts.size() != 52) {return 0.00;} //We should get 52 stats from /proc/[pid]/stat file
   long systemUptime = LinuxParser::UpTime();
   long hertz = sysconf(_SC_CLK_TCK);
-  if hertz==0 return 0.0;
+  if (hertz==0) return 0.0;
   long utime = LinuxParser::convertToLong(statsParts[13]);
   long stime = LinuxParser::convertToLong(statsParts[14]);
   long cutime = LinuxParser::convertToLong(statsParts[15]);
@@ -42,7 +42,7 @@ float Process::CpuUtilization() {
   long total_time = utime + stime + cutime + cstime;
   float seconds = (float) systemUptime - ((float) starttime/(float) hertz);
   float tbyh = (float) total_time / (float) hertz ;
-  if seconds==0 return 0.0;
+  if (seconds==0) return 0.0;
   
   return 100.00 * tbyh/seconds; 
 }
