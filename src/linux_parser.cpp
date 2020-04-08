@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "linux_parser.h"
 
@@ -107,11 +108,27 @@ float LinuxParser::MemoryUtilization() {
     string totalMemory_s = getLineForKey(kProcDirectory + kMeminfoFilename, "MemTotal:");
     systemAvailableMemory = convertToLong(totalMemory_s);
   }
-  string activeMemory_s = getLineForKey(kProcDirectory + kStatFilename, "Active:");
+  string activeMemory_s = getLineForKey(kProcDirectory + kMeminfoFilename, "MemFree:");
   long availableMemory = convertToLong(activeMemory_s);
   
-  if (systemAvailableMemory==0) return 100.00; 
-  return ((float) availableMemory/(float)systemAvailableMemory);
+  string bufferMemory_s = getLineForKey(kProcDirectory + kMeminfoFilename, "Buffers:");
+  long bufferMemory = convertToLong(bufferMemory_s);
+  
+  string CachedMemory_s = getLineForKey(kProcDirectory + kMeminfoFilename, "Cached:");
+  long CachedMemory = convertToLong(CachedMemory_s);
+  
+  string SReclaimableMemory_s = getLineForKey(kProcDirectory + kMeminfoFilename, "SReclaimable:");
+  long SReclaimableMemory = convertToLong(SReclaimableMemory_s);
+  
+  string ShmemMemory_s = getLineForKey(kProcDirectory + kMeminfoFilename, "Shmem:");
+  long ShmemMemory = convertToLong(ShmemMemory_s);
+  
+  if (systemAvailableMemory==0) return 100.00;
+  long totalMemory = systemAvailableMemory - availableMemory;
+  long cachedmemory = CachedMemory + SReclaimableMemory - ShmemMemory; 
+  long numerator = totalMemory - (bufferMemory   + cachedmemory);
+  float returnvalue = (float) numerator/(float)systemAvailableMemory;
+  return returnvalue;
  }
 
 // TODO: Read and return the system uptime

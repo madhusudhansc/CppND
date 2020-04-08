@@ -22,7 +22,7 @@ float Processor::Utilization() {
   
   previousCpuStats.copyFromOther(presentCpuStats);
   long PrevTotal = PrevIdle + PrevNonIdle;
-  long currTotal = currIdle + PrevIdle;
+  long currTotal = currIdle + NonIdle;
   long totald = currTotal - PrevTotal;
   long idled = currIdle - PrevIdle;
 
