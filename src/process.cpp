@@ -13,12 +13,15 @@ using std::to_string;
 using std::vector;
 
 // TODO: Return this process's ID
-int Process::Pid() { return pid_; }
+int Process::Pid() const { return pid_; }
 
 // TODO: Return this process's CPU utilization
-float Process::CpuUtilization() { 
+float Process::CpuUtilization()  { 
+  return cpuutilization_; 
+}
+float Process::CpuUtilization(int pid)  { 
   std::string line;
-  std::ifstream stream(LinuxParser::kProcDirectory + "/" + std::to_string(Pid()) + "/" + LinuxParser::kStatFilename);
+  std::ifstream stream(LinuxParser::kProcDirectory + "/" + std::to_string(pid) + "/" + LinuxParser::kStatFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
   } else {
@@ -45,8 +48,8 @@ float Process::CpuUtilization() {
   float seconds = (float) systemUptime - ((float) starttime/(float) hertz);
   float tbyh = (float) total_time / (float) hertz ;
   if (seconds==0) return 0.0;
-  
-  return tbyh/seconds; 
+  cpuutilization_ = tbyh/seconds;
+  return cpuutilization_; 
 }
 
 // TODO: Return the command that generated this process
@@ -70,4 +73,4 @@ long int Process::UpTime() {
 
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator>(Process const& a) const { return CpuUtilization() > a.CpuUtilization(); }
+bool Process::operator>(Process const& a) const { return cpuutilization_ > a.cpuutilization_; }

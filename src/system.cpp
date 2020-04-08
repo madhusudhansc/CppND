@@ -20,11 +20,15 @@ Processor& System::Cpu() { return cpu_; }
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() { 
     //Get vector of PID's present
+    processes_.clear();
     vector<int> running_process = LinuxParser::Pids();
     for(int process_id : running_process) {
         Process p(process_id);
+        p.CpuUtilization(process_id);
         processes_.push_back(p); 
     }
+    std::sort(processes_.begin(), processes_.end(), std::greater<Process>());
+
     return processes_; 
 }
 
